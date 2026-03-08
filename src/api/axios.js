@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
-    // --- TAMBAHKAN HEADERS INI ---
+    // 1. HAPUS + '/api' karena di Vercel/env sudah Anda tuliskan /api
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+
     headers: {
-        // 'ngrok-skip-browser-warning': 'true', // Bebas diisi apa saja, yang penting header ini ada
+        // 2. WAJIB DIAKTIFKAN! Agar Vercel bisa menembus layar biru ngrok
+        'ngrok-skip-browser-warning': 'true',
         'Accept': 'application/json',
     }
 });
