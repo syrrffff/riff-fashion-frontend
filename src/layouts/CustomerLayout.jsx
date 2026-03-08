@@ -148,13 +148,13 @@ export default function CustomerLayout() {
           {/* Menu Desktop */}
           <div className="hidden md:flex space-x-8 font-black text-sm uppercase tracking-widest">
             <Link
-              to="/customer"
+              to="/"
               className="hover:underline decoration-4 underline-offset-4"
             >
               Beranda
             </Link>
             <Link
-              to="/customer/products"
+              to="/products"
               className="hover:underline decoration-4 underline-offset-4"
             >
               Koleksi
@@ -176,7 +176,7 @@ export default function CustomerLayout() {
           {/* Kanan: Keranjang & Profil */}
           <div className="flex items-center space-x-4 md:space-x-6">
             <Link
-              to="/customer/cart"
+              to="/cart"
               className="relative p-2 border-2 border-transparent hover:border-black transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white"
             >
               <svg
@@ -227,14 +227,14 @@ export default function CustomerLayout() {
               {isUserDropdownOpen && (
                 <div className="absolute right-0 mt-4 w-48 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-50 font-black text-xs uppercase flex flex-col">
                   <Link
-                    to="/customer/profile"
+                    to="/profile"
                     onClick={() => setIsUserDropdownOpen(false)}
                     className="px-4 py-3 hover:bg-black hover:text-white transition-colors border-b-2 border-gray-100"
                   >
                     Akun Saya
                   </Link>
                   <Link
-                    to="/customer/orders"
+                    to="/orders"
                     onClick={() => setIsUserDropdownOpen(false)}
                     className="px-4 py-3 hover:bg-black hover:text-white transition-colors border-b-2 border-gray-100"
                   >
@@ -256,21 +256,21 @@ export default function CustomerLayout() {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t-4 border-black border-b-4 shadow-[0px_8px_0px_0px_rgba(0,0,0,1)] absolute w-full left-0 font-black text-lg uppercase tracking-widest flex flex-col">
             <Link
-              to="/customer"
+              to="/"
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-4 border-b-2 border-gray-100 hover:bg-black hover:text-white"
             >
               Beranda
             </Link>
             <Link
-              to="/customer/products"
+              to="/products"
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-4 border-b-2 border-gray-100 hover:bg-black hover:text-white"
             >
               Koleksi
             </Link>
             <Link
-              to="/customer/orders"
+              to="/orders"
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-4 hover:bg-black hover:text-white"
             >
@@ -322,7 +322,7 @@ export default function CustomerLayout() {
             <ul className="space-y-3 text-sm font-bold text-gray-400 uppercase tracking-widest">
               <li>
                 <Link
-                  to="/customer"
+                  to="/"
                   className="hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
                 >
                   Homepage
@@ -338,7 +338,7 @@ export default function CustomerLayout() {
               </li>
               <li>
                 <Link
-                  to="/customer/products"
+                  to="/products"
                   className="hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
                 >
                   Our Products
@@ -355,7 +355,7 @@ export default function CustomerLayout() {
             <ul className="space-y-3 text-sm font-bold text-gray-400 uppercase tracking-widest">
               <li>
                 <Link
-                  to="/customer/products"
+                  to="/products"
                   className="hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
                 >
                   New Arrivals

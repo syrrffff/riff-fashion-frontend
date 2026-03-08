@@ -59,7 +59,7 @@ export default function Login() {
 
   // Fungsi untuk mengarahkan user ke halaman login Google bawaan Laravel Socialite
   const handleGoogleLogin = () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const baseUrl = import.meta.env.VITE_STORAGE_URL;
     // Sesuaikan URL ini dengan route Socialite di Laravel Anda
     window.location.href = `${baseUrl}/auth/google/redirect`;
   };

@@ -140,7 +140,7 @@ export default function HomeCus() {
           <p className="text-lg md:text-xl text-gray-300 mb-10 font-bold max-w-2xl uppercase tracking-widest text-sm">
             Koleksi eksklusif untuk gaya hidup modern. Temukan kenyamanan dan keanggunan dalam setiap potongan pakaian kami.
           </p>
-          <Link to="/customer/products" className="bg-white text-black border-4 border-black px-10 py-5 text-lg font-black uppercase tracking-widest hover:bg-black hover:text-white hover:border-white transition-all shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-none">
+          <Link to="/products" className="bg-white text-black border-4 border-black px-10 py-5 text-lg font-black uppercase tracking-widest hover:bg-black hover:text-white hover:border-white transition-all shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-none">
             Mulai Belanja
           </Link>
         </div>
@@ -205,7 +205,7 @@ export default function HomeCus() {
               <h2 className="text-3xl md:text-5xl font-black text-black uppercase tracking-tighter">
                 Koleksi <span className="italic">{kategori.name}</span>
               </h2>
-              <Link to={`/customer/products?category=${kategori.slug}`} className="text-xs font-black uppercase tracking-widest border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors">
+              <Link to={`/products?category=${kategori.slug}`} className="text-xs font-black uppercase tracking-widest border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors">
                 Lihat Semua {kategori.name} &rarr;
               </Link>
             </div>
