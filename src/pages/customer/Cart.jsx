@@ -109,7 +109,7 @@ export default function Cart() {
                       src={
                         item.product_image?.startsWith('http')
                         ? item.product_image
-                        : `${import.meta.env.VITE_API_BASE_URL}/storage/${item.product_image}`
+                        : `${import.meta.env.VITE_STORAGE_URL}/storage/${item.product_image}`
                       }
                       alt={item.product_name}
                       className="w-20 h-24 object-cover bg-gray-100 border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"

@@ -74,7 +74,7 @@ export default function ProductsCus() {
             src={
               product.image_url.startsWith('http')
               ? product.image_url
-              : `${import.meta.env.VITE_API_BASE_URL}/storage/${product.image_url}`
+              : `${import.meta.env.VITE_STORAGE_URL}/storage/${product.image_url}`
             }
             alt={product.name}
             className="w-full h-full object-cover object-center group-hover:scale-110 transition duration-500 relative z-10"

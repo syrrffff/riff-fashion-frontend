@@ -17,7 +17,7 @@ const ProductCard = memo(({ product }) => {
             src={
               product.image_url.startsWith("http")
                 ? product.image_url
-                : `${import.meta.env.VITE_API_BASE_URL}/storage/${product.image_url}`
+                : `${import.meta.env.VITE_STORAGE_URL}/storage/${product.image_url}`
             }
             alt={product.name}
             loading="lazy"

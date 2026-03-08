@@ -214,7 +214,7 @@ export default function OrderDetail() {
                                                 src={
                                                     item.product_variant.product.image_url.startsWith('http')
                                                     ? item.product_variant.product.image_url
-                                                    : `${import.meta.env.VITE_API_BASE_URL}/storage/${item.product_variant.product.image_url}`
+                                                    : `${import.meta.env.VITE_STORAGE_URL}/storage/${item.product_variant.product.image_url}`
                                                 }
                                                 alt={item.product_variant?.product?.name || 'Produk'}
                                                 className="w-full h-full object-cover transition-transform hover:scale-110 relative z-10"

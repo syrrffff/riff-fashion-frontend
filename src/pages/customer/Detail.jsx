@@ -6,7 +6,7 @@ import api from '../../api/axios';
 // Helper function untuk memformat URL gambar agar lebih rapi
 const getFullImageUrl = (path) => {
   if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_API_BASE_URL}/storage/${path}`;
+  return path.startsWith('http') ? path : `${import.meta.env.VITE_STORAGE_URL}/storage/${path}`;
 };
 
 export default function ProductDetailCus() {
