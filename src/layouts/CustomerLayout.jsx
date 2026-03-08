@@ -154,7 +154,7 @@ export default function CustomerLayout() {
               Beranda
             </Link>
             <Link
-              to="/products"
+              to="/katalog"
               className="hover:underline decoration-4 underline-offset-4"
             >
               Koleksi
