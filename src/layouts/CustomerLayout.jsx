@@ -211,7 +211,7 @@ export default function CustomerLayout() {
 
               {/* Menu Text (Hanya terlihat di layar lebar) */}
               <div className="hidden lg:flex items-center space-x-8 font-black text-xs uppercase tracking-widest mr-8">
-                <Link to="/" className="hover:underline decoration-2 underline-offset-4">Beranda</Link>
+                <Link to="/Home" className="hover:underline decoration-2 underline-offset-4">Beranda</Link>
                 <Link to="/katalog" className="hover:underline decoration-2 underline-offset-4">Koleksi</Link>
                 <Link to="/AboutOurCompany" className="hover:underline decoration-2 underline-offset-4">Tentang</Link>
               </div>
@@ -286,7 +286,7 @@ export default function CustomerLayout() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 {cartCount > 0 && (
-                  <span className="absolute 0 right-0 bg-black text-white text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full">
+                  <span className="absolute top-0 right-0 bg-black text-white text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full">
                     {cartCount}
                   </span>
                 )}

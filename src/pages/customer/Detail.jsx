@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../api/axios';
@@ -57,6 +56,12 @@ export default function ProductDetailCus() {
       return;
     }
 
+    // Double check sebelum kirim API, pastikan stok tidak dimanipulasi
+    if (quantity > selectedVariant.stock) {
+      alert(`Mohon maaf, stok untuk varian ini hanya tersisa ${selectedVariant.stock} pcs.`);
+      return;
+    }
+
     setIsAddingToCart(true);
     try {
       await api.post('/addCart', {
@@ -73,6 +78,32 @@ export default function ProductDetailCus() {
       alert("Terjadi kesalahan jaringan. Gagal menambahkan produk.");
     } finally {
       setIsAddingToCart(false);
+    }
+  };
+
+  // LOGIKA BARU: Handler Perubahan Kuantitas agar tidak tembus batas stok
+  const handleIncreaseQuantity = () => {
+    if (!selectedVariant) {
+      alert("Pilih varian produk terlebih dahulu untuk melihat stok.");
+      return;
+    }
+    if (quantity < selectedVariant.stock) {
+      setQuantity(q => q + 1);
+    } else {
+      alert(`Maksimal pembelian untuk varian ini adalah ${selectedVariant.stock} pcs.`);
+    }
+  };
+
+  const handleDecreaseQuantity = () => {
+    setQuantity(q => Math.max(1, q - 1));
+  };
+
+  // LOGIKA BARU: Handler Pemilihan Varian (Reset quantity jika melebihi stok varian baru)
+  const handleVariantSelect = (variant) => {
+    setSelectedVariant(variant);
+    // Jika quantity saat ini lebih besar dari stok varian yang baru dipilih, turunkan quantity
+    if (quantity > variant.stock) {
+      setQuantity(variant.stock > 0 ? variant.stock : 1);
     }
   };
 
@@ -95,9 +126,12 @@ export default function ProductDetailCus() {
     </div>
   );
 
-// Tarik data 'images' dari object product
+  // Tarik data 'images' dari object product
   const galleryImages = product.images || [];
   const activeImageUrl = getFullImageUrl(activeImage);
+
+  // Cek apakah SEMUA stok benar-benar 0 (Sold Out Total)
+  const isTotallySoldOut = product.total_stock === 0;
 
   return (
     <div className="min-h-screen bg-white py-12 px-4 md:px-8 max-w-7xl mx-auto">
@@ -131,7 +165,7 @@ export default function ProductDetailCus() {
         <span>/</span>
         <Link to="/katalog" className="hover:text-black transition-colors">Koleksi</Link>
         <span>/</span>
-        <span className="text-black">{product.name}</span>
+        <span className="text-black truncate max-w-[200px] md:max-w-none">{product.name}</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
@@ -158,12 +192,18 @@ export default function ProductDetailCus() {
                 </svg>
               </div>
             )}
+
+            {/* BADGE SOLD OUT BESAR JIKA SEMUA HABIS */}
+            {isTotallySoldOut && (
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 -rotate-12 bg-red-600 text-white border-4 border-white shadow-2xl px-6 py-2 pointer-events-none">
+                  <span className="font-black text-3xl md:text-5xl uppercase tracking-widest drop-shadow-md">HABIS TERJUAL</span>
+               </div>
+            )}
           </div>
 
-          {/* GALERI THUMBNAILS (Muncul jika ada gambar utama atau galeri) */}
+          {/* GALERI THUMBNAILS */}
           {(product.image_url || galleryImages.length > 0) && (
             <div className="flex gap-4 overflow-x-auto pb-4 pt-2 custom-scrollbar">
-
               {/* Thumbnail Gambar Utama (Cover) */}
               {product.image_url && (
                 <button
@@ -174,11 +214,7 @@ export default function ProductDetailCus() {
                       : 'border-gray-300 hover:border-black hover:-translate-y-1'
                   }`}
                 >
-                  <img
-                    src={getFullImageUrl(product.image_url)}
-                    alt="Cover"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={getFullImageUrl(product.image_url)} alt="Cover" className="w-full h-full object-cover" />
                 </button>
               )}
 
@@ -193,18 +229,14 @@ export default function ProductDetailCus() {
                       : 'border-gray-300 hover:border-black hover:-translate-y-1'
                   }`}
                 >
-                  <img
-                    src={getFullImageUrl(image.image_url)}
-                    alt={`Gallery ${image.id}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={getFullImageUrl(image.image_url)} alt={`Gallery ${image.id}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* SISI KANAN: DETAIL & AKSI (Tetap sama seperti sebelumnya) */}
+        {/* SISI KANAN: DETAIL & AKSI */}
         <div className="flex flex-col justify-center">
 
           <div className="border-b-4 border-black pb-6 mb-6">
@@ -220,22 +252,51 @@ export default function ProductDetailCus() {
           </div>
 
           <div className="mb-8">
-            <h3 className="font-black uppercase text-sm tracking-widest mb-4">Pilih Varian (Ukuran & Warna)</h3>
+            <div className="flex justify-between items-end mb-4">
+               <h3 className="font-black uppercase text-sm tracking-widest">Pilih Varian (Ukuran & Warna)</h3>
+               {selectedVariant && (
+                 <span className="text-[10px] font-black text-gray-500 bg-gray-100 px-2 py-1 uppercase tracking-widest border-2 border-gray-300">
+                    Sisa Stok: {selectedVariant.stock}
+                 </span>
+               )}
+            </div>
+
             {product.variants && product.variants.length > 0 ? (
               <div className="flex flex-wrap gap-3">
-                {product.variants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    onClick={() => setSelectedVariant(variant)}
-                    className={`border-4 px-4 py-2 font-black uppercase text-sm tracking-widest transition-all ${
-                      selectedVariant?.id === variant.id
-                        ? 'border-black bg-black text-white shadow-[4px_4px_0px_0px_rgba(209,213,219,1)] translate-y-1'
-                        : 'border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none'
-                    }`}
-                  >
-                    {variant.size} - {variant.color}
-                  </button>
-                ))}
+                {product.variants.map((variant) => {
+                  const isOutOfStock = variant.stock <= 0;
+                  const isSelected = selectedVariant?.id === variant.id;
+
+                  return (
+                    <button
+                      key={variant.id}
+                      onClick={() => {
+                        if (!isOutOfStock) handleVariantSelect(variant);
+                      }}
+                      disabled={isOutOfStock}
+                      className={`border-4 px-4 py-2 font-black uppercase text-sm tracking-widest transition-all relative overflow-hidden
+                        ${isOutOfStock
+                            ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                            : isSelected
+                              ? 'border-black bg-black text-white shadow-[4px_4px_0px_0px_rgba(209,213,219,1)] translate-y-1'
+                              : 'border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none'
+                        }
+                      `}
+                    >
+                      {/* Coretan melintang jika habis */}
+                      {isOutOfStock && (
+                         <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-[120%] h-0.5 bg-gray-300 rotate-12"></div>
+                         </div>
+                      )}
+
+                      <span className="relative z-10">
+                        {variant.size} - {variant.color}
+                        {isOutOfStock && <span className="ml-2 text-[10px] text-red-500"> [HABIS]</span>}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm font-bold text-red-500 uppercase">Varian belum tersedia untuk produk ini.</p>
@@ -245,34 +306,38 @@ export default function ProductDetailCus() {
           <div className="mb-8">
             <h3 className="font-black uppercase text-sm tracking-widest mb-4">Kuantitas</h3>
             <div className="flex items-center gap-4">
-              <div className="flex items-center border-4 border-black w-fit shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className={`flex items-center border-4 w-fit transition-colors ${isTotallySoldOut ? 'border-gray-300' : 'border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'}`}>
                 <button
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="px-4 py-2 hover:bg-black hover:text-white transition-colors font-black text-lg"
+                  onClick={handleDecreaseQuantity}
+                  disabled={isTotallySoldOut}
+                  className="px-4 py-2 hover:bg-black hover:text-white transition-colors font-black text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >−</button>
-                <div className="w-12 text-center font-mono font-black text-lg border-x-4 border-black py-2">
-                  {quantity}
+                <div className={`w-12 text-center font-mono font-black text-lg border-x-4 py-2 ${isTotallySoldOut ? 'border-gray-300 text-gray-400' : 'border-black'}`}>
+                  {isTotallySoldOut ? '0' : quantity}
                 </div>
                 <button
-                  onClick={() => setQuantity(q => q + 1)}
-                  className="px-4 py-2 hover:bg-black hover:text-white transition-colors font-black text-lg"
+                  onClick={handleIncreaseQuantity}
+                  disabled={isTotallySoldOut}
+                  className="px-4 py-2 hover:bg-black hover:text-white transition-colors font-black text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >+</button>
               </div>
             </div>
           </div>
 
-          {/* TOMBOL ADD TO CART AKTIF */}
+          {/* TOMBOL ADD TO CART */}
           <button
             onClick={handleAddToCart}
-            disabled={isAddingToCart || !product.variants?.length}
-            className={`w-full py-5 border-4 border-black text-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 ${
-              isAddingToCart || !product.variants?.length
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300 translate-y-2 shadow-none'
-                : 'bg-black text-white hover:bg-white hover:text-black hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'
+            disabled={isAddingToCart || isTotallySoldOut || !product.variants?.length}
+            className={`w-full py-5 border-4 text-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 ${
+              isAddingToCart || isTotallySoldOut || !product.variants?.length
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 translate-y-2 shadow-none'
+                : 'bg-black text-white border-black hover:bg-white hover:text-black hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'
             }`}
           >
             {isAddingToCart ? (
               <span className="animate-pulse">Menambahkan...</span>
+            ) : isTotallySoldOut ? (
+              <span className="text-gray-500 line-through">Habis Terjual</span>
             ) : (
               <>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
